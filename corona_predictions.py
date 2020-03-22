@@ -1,7 +1,9 @@
-from numpy import array, arange, exp
+#!/usr/bin/env python
+
+from datetime import date, timedelta
 from matplotlib.pyplot import plot, subplots, grid, figure, show, title, xlabel, ylabel, legend
+from numpy import array, arange, exp
 from scipy.optimize import curve_fit
-from datetime import date
 
 import matplotlib.dates as mdates
 myFmt = mdates.DateFormatter('%d')
@@ -29,11 +31,11 @@ ax.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
 ax.format_xdata = mdates.DateFormatter('%m-%d')
 f.autofmt_xdate()
 
-plot(future_xd, func(future_x, *popt), '-r', label="Prediction")
-plot(future_xd, func(future_x, *popt), 'xr')
+plot(future_xd, func(future_x, *popt), 'x-r', label="Prediction")
 plot(xd, cases, '-b', label = "Confirmed cases")
-title("Corona virus cases prediction in Lithuania")
-ylabel("No of cases")
+title("SARS-CoV-2 case prediction in Lithuania")
+xlabel("Date")
+ylabel("Number of cases")
 legend()
 grid(True)
 show()
