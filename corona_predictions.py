@@ -6,23 +6,26 @@ from numpy import array, arange, exp
 from scipy.optimize import curve_fit
 
 import matplotlib.dates as mdates
-myFmt = mdates.DateFormatter('%d')
 
-days = mdates.DayLocator()
+CONFIRMED_CASES = [1, 2, 3, 3, 3, 6, 7, 12, 16, 26, 34, 48, 69, 99]
+DAYS_TO_PREDICT = 3
 
-def func(x, a, b , c):
+def func(x, a, b, c):
 	return a * exp(b * x) + c
 
 
+#myFmt = mdates.DateFormatter('%d')
+days = mdates.DayLocator()
 
-cases = array([1, 2, 3, 3, 3, 6, 7, 12, 16, 26, 34, 48, 69, 99])
+cases = array(CONFIRMED_CASES)
 x = arange(len(cases))
-future_x=arange(len(cases)+3) 
+
+future_x = arange(len(cases) + DAYS_TO_PREDICT)
 
 popt, pcov = curve_fit(func, x, cases) 
 
-xd=[date(2020,3,8+i) for i in x]
-future_xd = [date(2020,3,8+i) for i in future_x]
+xd = [date(2020, 3, 8+i) for i in x]
+future_xd = [date(2020, 3, 8) + timedelta(days=int(i)) for i in future_x]
 
 # figure()
 f, ax = subplots()
