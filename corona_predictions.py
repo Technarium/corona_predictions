@@ -7,7 +7,7 @@ from scipy.optimize import curve_fit
 
 import matplotlib.dates as mdates
 
-CONFIRMED_CASES = [1, 2, 3, 3, 3, 6, 7, 12, 16, 26, 34, 48, 69, 99, 143, 179, 209, 274, 299]
+CONFIRMED_CASES = [1, 2, 3, 3, 3, 6, 7, 12, 16, 26, 34, 48, 69, 99, 143, 179, 209, 274, 299, 358]
 DAYS_TO_PREDICT = 3
 
 def func(x, a, b, c):
