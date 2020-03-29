@@ -34,6 +34,13 @@ popt, pcov = curve_fit(exponential, x, cases)
 future_x = arange(len(cases) + DAYS_TO_PREDICT)
 future_xdates = [START_DATE + timedelta(days=int(i)) for i in future_x]
 
+# limited exponent fitting when it was still perfect
+perf_cases = array(CONFIRMED_CASES[:24])
+perf_x = arange(len(perf_cases))
+perf_popt, perf_pcov = curve_fit(exponential, perf_x, perf_cases)
+perf_future_x = arange(len(perf_cases) + DAYS_TO_PREDICT)
+perf_future_xdates = [START_DATE + timedelta(days=int(i)) for i in perf_future_x]
+
 # figure()
 f, ax = subplots()
 #ax.xaxis.set_major_locator(days)
@@ -43,6 +50,7 @@ f.autofmt_xdate()
 
 plot(xdates, cases, '-b', label = "Confirmed cases")
 plot(future_xdates, exponential(future_x, *popt), 'x-r', label="Prediction (exponential)")
+plot(perf_future_xdates, exponential(perf_future_x, *perf_popt), 'x--', color='grey', label="Prediction (initial exponential)")
 
 title("SARS-CoV-2 case prediction in Lithuania")
 xlabel("Date")
