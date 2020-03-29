@@ -7,10 +7,17 @@ from scipy.optimize import curve_fit
 
 import matplotlib.dates as mdates
 
-CONFIRMED_CASES = [1, 2, 3, 3, 3, 6, 7, 12, 16, 26, 34, 48, 69, 99, 143, 179, 209, 274, 299, 358, 394]
+START_DATE = date(2020, 2, 28)
+CONFIRMED_CASES = [
+        # initial stretch where an exponential function gives good fit: Feb 28 to Mar 22
+        # NOTE: quarantine declared on Mar 16 (day that ended with 16 cases)
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 6, 7, 12, 16, 26, 34, 48, 69, 99, 143,
+        # spread breaks exponential trajectory on Mar 23 (one week after quarantine start)
+        179, 209, 274, 299, 358, 394
+]
 DAYS_TO_PREDICT = 3
 
-def func(x, a, b, c):
+def exponential(x, a, b, c):
 	return a * exp(b * x) + c
 
 
@@ -22,10 +29,10 @@ x = arange(len(cases))
 
 future_x = arange(len(cases) + DAYS_TO_PREDICT)
 
-popt, pcov = curve_fit(func, x, cases) 
+popt, pcov = curve_fit(exponential, x, cases)
 
-xd = [date(2020, 3, 8+i) for i in x]
-future_xd = [date(2020, 3, 8) + timedelta(days=int(i)) for i in future_x]
+xd = [START_DATE + timedelta(days=int(i)) for i in x]
+future_xd = [START_DATE + timedelta(days=int(i)) for i in future_x]
 
 # figure()
 f, ax = subplots()
@@ -34,7 +41,7 @@ ax.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
 ax.format_xdata = mdates.DateFormatter('%m-%d')
 f.autofmt_xdate()
 
-plot(future_xd, func(future_x, *popt), 'x-r', label="Prediction")
+plot(future_xd, exponential(future_x, *popt), 'x-r', label="Prediction (exponential)")
 plot(xd, cases, '-b', label = "Confirmed cases")
 title("SARS-CoV-2 case prediction in Lithuania")
 xlabel("Date")
