@@ -7,14 +7,22 @@ from scipy.optimize import curve_fit
 
 import matplotlib.dates as mdates
 
-START_DATE = date(2020, 2, 28)
+# NOTE: first case was detected on 2020-02-28
+START_DATE = date(2020, 3, 8)
+# confirmed on day-end
 CONFIRMED_CASES = [
-        # initial stretch where an exponential function gives good fit: Feb 28 to Mar 22
-        # NOTE: quarantine declared on Mar 16 (day that ended with 16 cases)
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 3, 3, 6, 7, 12, 16, 26, 34, 48, 69, 99, 143,
+        # initial stretch where an exponential function gives good fit: Feb 28 to Mar 22;
+        # however, for now the first 9 days are omitted so the graph isn't too stretched
+        #1, 1, 1,
+        #1, 1, 1, 1, 1, 1,
+        1,
+        2, 3, 3, 3, 6, 7, 12,
+        # quarantine declared on Mar 16 (Monday, day that ended with 16 cases)
+        16, 26, 34, 48, 69, 99, 143,
         # spread breaks exponential trajectory on Mar 23 (one week after quarantine start)
         179, 209, 274, 299, 358, 394
 ]
+LAST_PERFECT_EXP_DATAPOINT = 143
 DAYS_TO_PREDICT = 3
 
 def exponential(x, a, b, c):
@@ -34,11 +42,14 @@ popt, pcov = curve_fit(exponential, x, cases)
 future_x = arange(len(cases) + DAYS_TO_PREDICT)
 future_xdates = [START_DATE + timedelta(days=int(i)) for i in future_x]
 
-# limited exponent fitting when it was still perfect
-perf_cases = array(CONFIRMED_CASES[:24])
+# limited exponent fitting when it was still perfect:
+# first, take a slice of all the cases...
+len_perf_cases = CONFIRMED_CASES.index(LAST_PERFECT_EXP_DATAPOINT) + 1
+perf_cases = array(CONFIRMED_CASES[:len_perf_cases])
 perf_x = arange(len(perf_cases))
+# ... then fit a curve to that
 perf_popt, perf_pcov = curve_fit(exponential, perf_x, perf_cases)
-perf_future_x = arange(len(perf_cases) + DAYS_TO_PREDICT)
+perf_future_x = arange(len(perf_cases) + DAYS_TO_PREDICT*2)
 perf_future_xdates = [START_DATE + timedelta(days=int(i)) for i in perf_future_x]
 
 # figure()
