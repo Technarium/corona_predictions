@@ -24,14 +24,14 @@ def exponential(x, a, b, c):
 #myFmt = mdates.DateFormatter('%d')
 days = mdates.DayLocator()
 
+# actual cases
 cases = array(CONFIRMED_CASES)
 x = arange(len(cases))
-
-future_x = arange(len(cases) + DAYS_TO_PREDICT)
-
-popt, pcov = curve_fit(exponential, x, cases)
-
 xd = [START_DATE + timedelta(days=int(i)) for i in x]
+
+# best-effort to fit an exponent, using all data
+popt, pcov = curve_fit(exponential, x, cases)
+future_x = arange(len(cases) + DAYS_TO_PREDICT)
 future_xd = [START_DATE + timedelta(days=int(i)) for i in future_x]
 
 # figure()
@@ -41,8 +41,9 @@ ax.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
 ax.format_xdata = mdates.DateFormatter('%m-%d')
 f.autofmt_xdate()
 
-plot(future_xd, exponential(future_x, *popt), 'x-r', label="Prediction (exponential)")
 plot(xd, cases, '-b', label = "Confirmed cases")
+plot(future_xd, exponential(future_x, *popt), 'x-r', label="Prediction (exponential)")
+
 title("SARS-CoV-2 case prediction in Lithuania")
 xlabel("Date")
 ylabel("Number of cases")
