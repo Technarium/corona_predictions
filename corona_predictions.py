@@ -28,6 +28,13 @@ DAYS_TO_PREDICT = 3
 def exponential(x, a, b, c):
 	return a * exp(b * x) + c
 
+def fit(func, x, y):
+        popt, pcov = curve_fit(func, x, y)
+        # "full": current (fitted) and future
+        full_x = arange(len(y) + DAYS_TO_PREDICT)
+        full_x_as_dates = [START_DATE + timedelta(days=int(i)) for i in full_x]
+        return popt, pcov, full_x, full_x_as_dates
+
 
 #myFmt = mdates.DateFormatter('%d')
 days = mdates.DayLocator()
@@ -38,9 +45,7 @@ x = arange(len(cases))
 xdates = [START_DATE + timedelta(days=int(i)) for i in x]
 
 # best-effort to fit an exponent, using all data
-popt, pcov = curve_fit(exponential, x, cases)
-future_x = arange(len(cases) + DAYS_TO_PREDICT)
-future_xdates = [START_DATE + timedelta(days=int(i)) for i in future_x]
+popt, _, future_x, future_xdates = fit(exponential, x, cases)
 
 # limited exponent fitting when it was still perfect:
 # first, take a slice of all the cases...
@@ -48,9 +53,7 @@ len_perf_cases = CONFIRMED_CASES.index(LAST_PERFECT_EXP_DATAPOINT) + 1
 perf_cases = array(CONFIRMED_CASES[:len_perf_cases])
 perf_x = arange(len(perf_cases))
 # ... then fit a curve to that
-perf_popt, perf_pcov = curve_fit(exponential, perf_x, perf_cases)
-perf_future_x = arange(len(perf_cases) + DAYS_TO_PREDICT*2)
-perf_future_xdates = [START_DATE + timedelta(days=int(i)) for i in perf_future_x]
+perf_popt, _, perf_future_x, perf_future_xdates = fit(exponential, perf_x, perf_cases)
 
 # figure()
 f, ax = subplots()
