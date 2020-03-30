@@ -36,6 +36,7 @@ CONFIRMED_CASES = [
 LAST_PERFECT_EXP_DATAPOINT = 143
 DAYS_TO_PREDICT = 3
 
+
 def exponential(x, a, b, c):
     return a * exp(b * x) + c
 
@@ -75,7 +76,7 @@ ax.format_xdata = mdates.DateFormatter('%m-%d')
 f.autofmt_xdate()
 
 plot(xdates, cases,
-     '-b', label = "Confirmed cases")
+     '-b', label="Confirmed cases")
 plot(future_xdates, exponential(future_x, *popt),
      'x-r', label="Prediction (exponential)")
 plot(perf_future_xdates, exponential(perf_future_x, *perf_popt),
