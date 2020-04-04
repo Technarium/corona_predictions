@@ -17,7 +17,7 @@ from scipy.optimize import curve_fit
 
 import matplotlib.dates as mdates
 
-# NOTE: first case was detected on 2020-02-28
+# NOTE: first case was detected on 2020-02-27/28: announced that night
 START_DATE = date(2020, 3, 8)
 # confirmed on day-end
 CONFIRMED_CASES = [
@@ -32,7 +32,7 @@ CONFIRMED_CASES = [
     16, 26, 34, 48, 69, 99, 143,
     # no longer exponential on Mar 23 (one week after quarantine start)
     179, 209, 274, 299, 358, 394, 460,
-    491, 537, 605, 649,
+    491, 537, 605, 649, 724,
 ]
 LAST_PERFECT_EXP_DATAPOINT = 143
 DAYS_TO_PREDICT = 3
