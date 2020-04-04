@@ -35,7 +35,7 @@ CONFIRMED_CASES = [
     491, 537, 605, 649, 724,
 ]
 LAST_PERFECT_EXP_DATAPOINT = 143
-DAYS_TO_PREDICT = 3
+DAYS_TO_PREDICT = 7
 
 
 def linear(x, a, b):
@@ -44,10 +44,10 @@ def linear(x, a, b):
 def exponential(x, a, b, c):
     return a * exp(b * x) + c
 
-def fit(func, x, y, start_date=START_DATE):
+def fit(func, x, y, start_date=START_DATE, days_to_predict=DAYS_TO_PREDICT):
     popt, pcov = curve_fit(func, x, y)
     # "full": current (fitted) and future
-    full_x = arange(len(y) + DAYS_TO_PREDICT)
+    full_x = arange(len(y) + days_to_predict)
     full_x_as_dates = [start_date + timedelta(days=int(i)) for i in full_x]
     return popt, pcov, full_x, full_x_as_dates
 
@@ -73,6 +73,7 @@ perf_popt, _, perf_future_x, perf_future_xdates = fit(
     exponential,
     perf_x,
     perf_cases,
+    days_to_predict=5,
 )
 
 # linear fit after initial exponential run
@@ -84,7 +85,7 @@ linear_popt, _, linear_future_x, linear_future_xdates = fit(
     linear,
     linear_x,
     linear_cases,
-    start_date=linear_start_date
+    start_date=linear_start_date,
 )
 
 # exponential fit across same data
@@ -92,7 +93,7 @@ exp2_popt, _, exp2_future_x, exp2_future_xdates = fit(
     exponential,
     linear_x,
     linear_cases,
-    start_date=linear_start_date
+    start_date=linear_start_date,
 )
 
 # figure()
