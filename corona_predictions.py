@@ -38,14 +38,17 @@ LAST_PERFECT_EXP_DATAPOINT = 143
 DAYS_TO_PREDICT = 3
 
 
+def linear(x, a, b):
+    return a * x + b
+
 def exponential(x, a, b, c):
     return a * exp(b * x) + c
 
-def fit(func, x, y):
+def fit(func, x, y, start_date=START_DATE):
     popt, pcov = curve_fit(func, x, y)
     # "full": current (fitted) and future
     full_x = arange(len(y) + DAYS_TO_PREDICT)
-    full_x_as_dates = [START_DATE + timedelta(days=int(i)) for i in full_x]
+    full_x_as_dates = [start_date + timedelta(days=int(i)) for i in full_x]
     return popt, pcov, full_x, full_x_as_dates
 
 
@@ -66,8 +69,22 @@ len_perf_cases = CONFIRMED_CASES.index(LAST_PERFECT_EXP_DATAPOINT) + 1
 perf_cases = array(CONFIRMED_CASES[:len_perf_cases])
 perf_x = arange(len(perf_cases))
 # ... then fit a curve to that
-perf_popt, _, perf_future_x, perf_future_xdates = fit(exponential,
-                                                      perf_x, perf_cases)
+perf_popt, _, perf_future_x, perf_future_xdates = fit(
+    exponential,
+    perf_x,
+    perf_cases,
+)
+
+# linear fit after initial exponential run
+linear_start_date = START_DATE + timedelta(days=int(len_perf_cases))
+linear_cases = array(CONFIRMED_CASES[len_perf_cases:])
+linear_x = arange(len(linear_cases))
+linear_popt, _, linear_future_x, linear_future_xdates = fit(
+    linear,
+    linear_x,
+    linear_cases,
+    start_date=linear_start_date
+)
 
 # figure()
 f, ax = subplots()
@@ -82,6 +99,8 @@ plot(future_xdates, exponential(future_x, *popt),
      'x-r', label="Prediction (exponential)")
 plot(perf_future_xdates, exponential(perf_future_x, *perf_popt),
      'x--', color='grey', label="Prediction (initial exponential)")
+plot(linear_future_xdates, linear(linear_future_x, *linear_popt),
+     'x--', color='#33aabb', label="Prediction (linear)")
 
 title("SARS-CoV-2 case prediction in Lithuania")
 xlabel("Date")
