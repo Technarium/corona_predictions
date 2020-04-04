@@ -76,11 +76,20 @@ perf_popt, _, perf_future_x, perf_future_xdates = fit(
 )
 
 # linear fit after initial exponential run
-linear_start_date = START_DATE + timedelta(days=int(len_perf_cases))
-linear_cases = array(CONFIRMED_CASES[len_perf_cases:])
+linear_x_offset = len_perf_cases - 1
+linear_start_date = START_DATE + timedelta(days=linear_x_offset)
+linear_cases = array(CONFIRMED_CASES[linear_x_offset:])
 linear_x = arange(len(linear_cases))
 linear_popt, _, linear_future_x, linear_future_xdates = fit(
     linear,
+    linear_x,
+    linear_cases,
+    start_date=linear_start_date
+)
+
+# exponential fit across same data
+exp2_popt, _, exp2_future_x, exp2_future_xdates = fit(
+    exponential,
     linear_x,
     linear_cases,
     start_date=linear_start_date
@@ -95,12 +104,14 @@ f.autofmt_xdate()
 
 plot(xdates, cases,
      '-b', label="Confirmed cases")
-plot(future_xdates, exponential(future_x, *popt),
-     'x-r', label="Prediction (exponential)")
+# plot(future_xdates, exponential(future_x, *popt),
+#      'x--r', label="Exponential fit across all data")
 plot(perf_future_xdates, exponential(perf_future_x, *perf_popt),
-     'x--', color='grey', label="Prediction (initial exponential)")
+     'x--', color='grey', label="Exponential fit during initial run")
 plot(linear_future_xdates, linear(linear_future_x, *linear_popt),
-     'x--', color='#33aabb', label="Prediction (linear)")
+     'x--', color='#33aabb', label="Linear fit after initial run")
+plot(exp2_future_xdates, exponential(exp2_future_x, *exp2_popt),
+     'x--', color='#ee66aa', label="Exponential fit after initial run")
 
 title("SARS-CoV-2 case prediction in Lithuania")
 xlabel("Date")
