@@ -130,12 +130,19 @@ plot(linear_future_xdates, linear_future_ycases,
      'x--', color='#ee66aa', label="Linear fit after initial run")
 plot(exp_future_xdates, exp_future_ycases,
      'x--', color='#66ccee', label="Exponential fit after initial run")
-plot(diffe_future_xdates, diffe_future_ycases,
-     '--', color='#66ccee', alpha=0.5, label="Difference between the two, added")
-plot(diffl_future_xdates, diffl_future_ycases,
-     '--', color='#ee66aa', alpha=0.5, label="Difference between the two, removed")
 
-title("SARS-CoV-2 case prediction in Lithuania")
+# supplemental: neither raw data nor actual fits
+last_n = DAYS_TO_PREDICT + 3
+plot(diffe_future_xdates[-last_n:], diffe_future_ycases[-last_n:],
+     '--', color='#66ccee', alpha=0.5,
+     label="(Difference between the two, added)",
+)
+plot(diffl_future_xdates[-last_n:], diffl_future_ycases[-last_n:],
+     '--', color='#ee66aa',
+     alpha=0.5, label="(Difference between the two, removed)",
+)
+
+title("SARS-CoV-2 case predictions in Lithuania")
 xlabel("Date")
 ylabel("Number of cases")
 legend()
