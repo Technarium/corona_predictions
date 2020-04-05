@@ -116,6 +116,8 @@ f, ax = subplots()
 #ax.xaxis.set_major_locator(days)
 ax.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
 ax.format_xdata = mdates.DateFormatter('%m-%d')
+ax.minorticks_on()
+
 f.autofmt_xdate()
 
 plot(xdates, cases,
@@ -125,17 +127,18 @@ plot(xdates, cases,
 plot(perf_future_xdates, perf_future_ycases,
      'x--', color='grey', label="Exponential fit during initial run")
 plot(linear_future_xdates, linear_future_ycases,
-     'x--', color='#ddaa44', label="Linear fit after initial run")
+     'x--', color='#ee66aa', label="Linear fit after initial run")
 plot(exp_future_xdates, exp_future_ycases,
      'x--', color='#66ccee', label="Exponential fit after initial run")
 plot(diffe_future_xdates, diffe_future_ycases,
-     '--', color='#aa66ee', label="Difference between the two, added")
+     '--', color='#66ccee', alpha=0.5, label="Difference between the two, added")
 plot(diffl_future_xdates, diffl_future_ycases,
-     '--', color='#ee66aa', label="Difference between the two, removed")
+     '--', color='#ee66aa', alpha=0.5, label="Difference between the two, removed")
 
 title("SARS-CoV-2 case prediction in Lithuania")
 xlabel("Date")
 ylabel("Number of cases")
 legend()
-grid(True)
+grid(which='major')
+grid(which='minor', linestyle='--')
 show()
