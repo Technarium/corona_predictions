@@ -89,7 +89,7 @@ linear_popt, _, linear_future_x, linear_future_xdates = fit(
 )
 
 # exponential fit across same data
-exp2_popt, _, exp2_future_x, exp2_future_xdates = fit(
+exp_popt, _, exp_future_x, exp_future_xdates = fit(
     exponential,
     linear_x,
     linear_cases,
@@ -111,7 +111,7 @@ plot(perf_future_xdates, exponential(perf_future_x, *perf_popt),
      'x--', color='grey', label="Exponential fit during initial run")
 plot(linear_future_xdates, linear(linear_future_x, *linear_popt),
      'x--', color='#33aabb', label="Linear fit after initial run")
-plot(exp2_future_xdates, exponential(exp2_future_x, *exp2_popt),
+plot(exp_future_xdates, exponential(exp_future_x, *exp_popt),
      'x--', color='#ee66aa', label="Exponential fit after initial run")
 
 title("SARS-CoV-2 case prediction in Lithuania")
