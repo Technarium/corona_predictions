@@ -60,8 +60,8 @@ cases = array(CONFIRMED_CASES)
 x = arange(len(cases))
 xdates = [START_DATE + timedelta(days=int(i)) for i in x]
 
-# best-effort to fit an exponent, using all data
-popt, _, future_x, future_xdates = fit(exponential, x, cases)
+# best-effort to fit an exponential function, using all data
+all_popt, _, all_future_x, all_future_xdates = fit(exponential, x, cases)
 
 # limited exponent fitting when it was still perfect:
 # first, take a slice of all the cases...
@@ -105,7 +105,7 @@ f.autofmt_xdate()
 
 plot(xdates, cases,
      '-b', label="Confirmed cases")
-# plot(future_xdates, exponential(future_x, *popt),
+# plot(all_future_xdates, exponential(all_future_x, *all_popt),
 #      'x--r', label="Exponential fit across all data")
 plot(perf_future_xdates, exponential(perf_future_x, *perf_popt),
      'x--', color='grey', label="Exponential fit during initial run")
