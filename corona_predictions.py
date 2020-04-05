@@ -75,6 +75,7 @@ perf_popt, _, perf_future_x, perf_future_xdates = fit(
     perf_cases,
     days_to_predict=5,
 )
+perf_future_ycases = exponential(perf_future_x, *perf_popt)
 
 # linear fit after initial exponential run
 linear_x_offset = len_perf_cases - 1
@@ -87,6 +88,7 @@ linear_popt, _, linear_future_x, linear_future_xdates = fit(
     linear_cases,
     start_date=linear_start_date,
 )
+linear_future_ycases = linear(linear_future_x, *linear_popt)
 
 # exponential fit across same data
 exp_popt, _, exp_future_x, exp_future_xdates = fit(
@@ -95,6 +97,19 @@ exp_popt, _, exp_future_x, exp_future_xdates = fit(
     linear_cases,
     start_date=linear_start_date,
 )
+exp_future_ycases = exponential(exp_future_x, *exp_popt)
+
+# exponential fit + difference between exponential and linear
+diffe_future_xdates = exp_future_xdates
+diffe_future_ycases = [2 * ex - li
+                       for ex, li in zip(exp_future_ycases,
+                                         linear_future_ycases)]
+
+# linear fit - difference between exponential and linear
+diffl_future_xdates = exp_future_xdates
+diffl_future_ycases = [2 * li - ex
+                       for ex, li in zip(exp_future_ycases,
+                                         linear_future_ycases)]
 
 # figure()
 f, ax = subplots()
@@ -107,12 +122,16 @@ plot(xdates, cases,
      '-b', label="Confirmed cases")
 # plot(all_future_xdates, exponential(all_future_x, *all_popt),
 #      'x--r', label="Exponential fit across all data")
-plot(perf_future_xdates, exponential(perf_future_x, *perf_popt),
+plot(perf_future_xdates, perf_future_ycases,
      'x--', color='grey', label="Exponential fit during initial run")
-plot(linear_future_xdates, linear(linear_future_x, *linear_popt),
-     'x--', color='#33aabb', label="Linear fit after initial run")
-plot(exp_future_xdates, exponential(exp_future_x, *exp_popt),
-     'x--', color='#ee66aa', label="Exponential fit after initial run")
+plot(linear_future_xdates, linear_future_ycases,
+     'x--', color='#ddaa44', label="Linear fit after initial run")
+plot(exp_future_xdates, exp_future_ycases,
+     'x--', color='#66ccee', label="Exponential fit after initial run")
+plot(diffe_future_xdates, diffe_future_ycases,
+     '--', color='#aa66ee', label="Difference between the two, added")
+plot(diffl_future_xdates, diffl_future_ycases,
+     '--', color='#ee66aa', label="Difference between the two, removed")
 
 title("SARS-CoV-2 case prediction in Lithuania")
 xlabel("Date")
