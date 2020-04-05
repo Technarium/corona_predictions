@@ -120,8 +120,7 @@ ax.minorticks_on()
 
 f.autofmt_xdate()
 
-plot(xdates, cases,
-     '-b', label="Confirmed cases")
+# plot fits first, so they get layered on the bottom
 # plot(all_future_xdates, exponential(all_future_x, *all_popt),
 #      'x--r', label="Exponential fit across all data")
 plot(perf_future_xdates, perf_future_ycases,
@@ -130,7 +129,6 @@ plot(linear_future_xdates, linear_future_ycases,
      'x--', color='#ee66aa', label="Linear fit after initial run")
 plot(exp_future_xdates, exp_future_ycases,
      'x--', color='#66ccee', label="Exponential fit after initial run")
-
 # supplemental: neither raw data nor actual fits
 last_n = DAYS_TO_PREDICT + 3
 plot(diffe_future_xdates[-last_n:], diffe_future_ycases[-last_n:],
@@ -141,6 +139,8 @@ plot(diffl_future_xdates[-last_n:], diffl_future_ycases[-last_n:],
      '--', color='#ee66aa',
      alpha=0.5, label="(Difference between the two, removed)",
 )
+# plot actual data on top of everything, so it doesn't get "hidden"
+plot(xdates, cases, '-b', alpha=0.7, label="Confirmed cases")
 
 title("SARS-CoV-2 case predictions in Lithuania")
 xlabel("Date")
