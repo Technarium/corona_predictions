@@ -33,7 +33,11 @@ CONFIRMED_CASES = [
     # no longer exponential on Mar 23 (one week after quarantine start)
     179, 209, 274, 299, 358, 394, 460,
     491, 537, 605, 649, 724, 764, 796,
-    833,
+    # starting week of Apr 6 (Mon), data is no longer entered as "the
+    # number of cases at day-end", but instead "the number of cases at
+    # morning briefing"; this is the same data most other sources will
+    # present, but they'll have it shifted a day back
+    843,
 ]
 LAST_PERFECT_EXP_DATAPOINT = 143
 DAYS_TO_PREDICT = 7
