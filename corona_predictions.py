@@ -33,6 +33,7 @@ CONFIRMED_CASES = [
     # no longer exponential on Mar 23 (one week after quarantine start)
     179, 209, 274, 299, 358, 394, 460,
     491, 537, 605, 649, 724, 764, 796,
+    833,
 ]
 LAST_PERFECT_EXP_DATAPOINT = 143
 DAYS_TO_PREDICT = 7
