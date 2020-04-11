@@ -37,7 +37,7 @@ CONFIRMED_CASES = [
     # number of cases at day-end", but instead "the number of cases at
     # morning briefing"; this is the same data most other sources will
     # present, but they'll have it shifted a day back
-    843, 880, 912, 955, 999,
+    843, 880, 912, 955, 999, 1026
 ]
 LAST_PERFECT_EXP_DATAPOINT = 143
 DAYS_TO_PREDICT = 7
