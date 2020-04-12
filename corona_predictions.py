@@ -50,7 +50,7 @@ def exponential(x, a, b, c):
     return a * exp(b * x) + c
 
 def fit(func, x, y, start_date=START_DATE, days_to_predict=DAYS_TO_PREDICT):
-    popt, pcov = curve_fit(func, x, y)
+    popt, pcov = curve_fit(func, x, y, maxfev=10000)
     # "full": current (fitted) and future
     full_x = arange(len(y) + days_to_predict)
     full_x_as_dates = [start_date + timedelta(days=int(i)) for i in full_x]
