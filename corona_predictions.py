@@ -38,6 +38,7 @@ CONFIRMED_CASES = [
     # morning briefing"; this is the same data most other sources will
     # present, but they'll have it shifted a day back
     843, 880, 912, 955, 999, 1026, 1053,
+    1062,
 ]
 LAST_PERFECT_EXP_DATAPOINT = 143
 DAYS_TO_PREDICT = 7
