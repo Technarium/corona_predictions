@@ -131,10 +131,10 @@ f.autofmt_xdate()
 #      'x--r', label="Exponential fit across all data")
 plot(perf_future_xdates, perf_future_ycases,
      'x--', color='grey', label="Exponential fit during initial run")
-plot(linear_future_xdates, linear_future_ycases,
-     'x--', color='#ee66aa', label="Linear fit after initial run")
 plot(exp_future_xdates, exp_future_ycases,
      'x--', color='#66ccee', label="Exponential fit after initial run")
+plot(linear_future_xdates, linear_future_ycases,
+     'x--', color='#ee66aa', label="Linear fit after initial run")
 # supplemental: neither raw data nor actual fits
 last_n = DAYS_TO_PREDICT + 3
 plot(diffe_future_xdates[-last_n:], diffe_future_ycases[-last_n:],
