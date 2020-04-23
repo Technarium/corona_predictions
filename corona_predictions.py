@@ -51,6 +51,9 @@ def linear(x, a, b):
 def exponential(x, a, b, c):
     return a * exp(b * x) + c
 
+def sigmoid(x, y0, x0, c, k):
+    return c / (1 + exp((x - x0) / k)) + y0
+
 def fit(func, x, y, start_date=START_DATE, days_to_predict=DAYS_TO_PREDICT):
     popt, pcov = curve_fit(func, x, y, maxfev=10000)
     # "full": current (fitted) and future
@@ -106,6 +109,15 @@ exp_popt, _, exp_future_x, exp_future_xdates = fit(
 )
 exp_future_ycases = exponential(exp_future_x, *exp_popt)
 
+# sigmoidal fit across same data
+sig_popt, _, sig_future_x, sig_future_xdates = fit(
+    sigmoid,
+    linear_x,
+    linear_cases,
+    start_date=linear_start_date,
+)
+sig_future_ycases = sigmoid(sig_future_x, *sig_popt)
+
 # exponential fit + difference between exponential and linear
 diffe_future_xdates = exp_future_xdates
 diffe_future_ycases = [2 * ex - li
@@ -132,6 +144,8 @@ f.autofmt_xdate()
 #      'x--r', label="Exponential fit across all data")
 plot(perf_future_xdates, perf_future_ycases,
      'x--', color='grey', label="Exponential fit during initial run")
+plot(sig_future_xdates, sig_future_ycases,
+     'x--', color='#66ee66', label="Sigmoidal fit after initial run")
 plot(exp_future_xdates, exp_future_ycases,
      'x--', color='#66ccee', label="Exponential fit after initial run")
 plot(linear_future_xdates, linear_future_ycases,
