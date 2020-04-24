@@ -8,3 +8,7 @@ data is not aligned to day-end.
 This is a simple script that uses local data instead. It plots
 known-confirmed cases, and tries to fit a curve to that (currently an
 exponential curve).
+
+The principal source is https://sam.lrv.lt/lt/naujienos/koronavirusas -
+however, it does not provide date-specific slugs; therefore, commits
+link to media outlets that do, when possible.
