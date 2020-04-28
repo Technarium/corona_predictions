@@ -146,7 +146,7 @@ f.autofmt_xdate()
 plot(perf_future_xdates, perf_future_ycases,
      'x--', color='grey', label="Exponential fit during initial run")
 plot(sig_future_xdates, sig_future_ycases,
-     'x--', color='#66ee66', label="Sigmoidal fit after initial run")
+     'x--', color='#446644', label="Sigmoidal fit after initial run")
 plot(exp_future_xdates, exp_future_ycases,
      'x--', color='#66ccee', label="Exponential fit after initial run")
 plot(linear_future_xdates, linear_future_ycases,
