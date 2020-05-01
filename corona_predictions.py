@@ -17,18 +17,17 @@ from scipy.optimize import curve_fit
 
 import matplotlib.dates as mdates
 
-# NOTE: first case was detected on 2020-02-27/28: announced that night
-START_DATE = date(2020, 3, 8)
+# NOTE: first case was detected on 2020-02-27: announced the night of
+# 27/28; recorded on 2020-02-28
+START_DATE = date(2020, 2, 24)
 # confirmed on day-end
 CONFIRMED_CASES = [
-    # initial stretch where an exponential function gives good fit:
-    # Feb 28 to Mar 22; however, for now the first 9 days are omitted
-    # so the graph isn't too stretched
-    #1, 1, 1,
-    #1, 1, 1, 1, 1, 1,
-    1,
+    0, 0, 0, 0, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1,
     2, 3, 3, 3, 6, 7, 12,
-    # quarantine declared on Mar 16 (Mon, day that ended with 16 cases)
+    # quarantine declared on Mar 16 (Mon, day that ended with 16 cases);
+    # initial stretch where an exponential function gives good
+    # fit is up to Mar 22 (day with 143 cases)
     16, 26, 34, 48, 69, 99, 143,
     # no longer exponential on Mar 23 (one week after quarantine start)
     179, 209, 274, 299, 358, 394, 460,
@@ -52,7 +51,7 @@ def linear(x, a, b):
 def exponential(x, a, b, c):
     return a * exp(b * x) + c
 
-def sigmoid(x, y0, x0, c, k):
+def sigmoidal(x, y0, x0, c, k):
     return c / (1 + exp((x - x0) / k)) + y0
 
 def fit(func, x, y, start_date=START_DATE, days_to_predict=DAYS_TO_PREDICT):
@@ -67,12 +66,12 @@ def fit(func, x, y, start_date=START_DATE, days_to_predict=DAYS_TO_PREDICT):
 days = mdates.DayLocator()
 
 # actual cases
-cases = array(CONFIRMED_CASES)
-x = arange(len(cases))
-xdates = [START_DATE + timedelta(days=int(i)) for i in x]
+all_cases = array(CONFIRMED_CASES)
+all_x = arange(len(all_cases))
+all_xdates = [START_DATE + timedelta(days=int(i)) for i in all_x]
 
 # best-effort to fit an exponential function, using all data
-all_popt, _, all_future_x, all_future_xdates = fit(exponential, x, cases)
+all_popt, _, all_future_x, all_future_xdates = fit(exponential, all_x, all_cases)
 
 # limited exponent fitting when it was still perfect:
 # first, take a slice of all the cases...
@@ -110,14 +109,13 @@ exp_popt, _, exp_future_x, exp_future_xdates = fit(
 )
 exp_future_ycases = exponential(exp_future_x, *exp_popt)
 
-# sigmoidal fit across same data
+# sigmoidal fit across all data
 sig_popt, _, sig_future_x, sig_future_xdates = fit(
-    sigmoid,
-    linear_x,
-    linear_cases,
-    start_date=linear_start_date,
+    sigmoidal,
+    all_x,
+    all_cases,
 )
-sig_future_ycases = sigmoid(sig_future_x, *sig_popt)
+sig_future_ycases = sigmoidal(sig_future_x, *sig_popt)
 
 # exponential fit + difference between exponential and linear
 diffe_future_xdates = exp_future_xdates
@@ -145,7 +143,7 @@ f.autofmt_xdate()
 #      'x--r', label="Exponential fit across all data")
 plot(perf_future_xdates, perf_future_ycases,
      'x--', color='grey', label="Exponential fit during initial run")
-plot(sig_future_xdates, sig_future_ycases,
+plot(sig_future_xdates[linear_x_offset:], sig_future_ycases[linear_x_offset:],
      'x--', color='#446644', label="Sigmoidal fit after initial run")
 plot(exp_future_xdates, exp_future_ycases,
      'x--', color='#66ccee', label="Exponential fit after initial run")
@@ -162,7 +160,7 @@ plot(diffl_future_xdates[-last_n:], diffl_future_ycases[-last_n:],
      alpha=0.5, label="(Difference between the two, removed)",
 )
 # plot actual data on top of everything, so it doesn't get "hidden"
-plot(xdates, cases, '-b', alpha=0.7, label="Confirmed cases")
+plot(all_xdates, all_cases, '-b', alpha=0.7, label="Confirmed cases")
 
 title("SARS-CoV-2 case predictions in Lithuania")
 xlabel("Date")
