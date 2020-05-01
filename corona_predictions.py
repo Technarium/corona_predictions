@@ -12,7 +12,7 @@ from matplotlib.pyplot import (
     ylabel,
     legend,
 )
-from numpy import array, arange, exp
+from numpy import array, arange, exp, log
 from scipy.optimize import curve_fit
 
 import matplotlib.dates as mdates
@@ -50,6 +50,9 @@ def linear(x, a, b):
 
 def exponential(x, a, b, c):
     return a * exp(b * x) + c
+
+def logarithmic(x, a, b, c):
+    return a * log(b * x + 1e-10) + c
 
 def sigmoidal(x, y0, x0, c, k):
     return c / (1 + exp((x - x0) / k)) + y0
@@ -118,6 +121,15 @@ exp_popt, _, exp_future_x, exp_future_xdates = fit(
 )
 exp_future_ycases = exponential(exp_future_x, *exp_popt)
 
+# logarithmic fit across same data
+log_popt, _, log_future_x, log_future_xdates = fit(
+    logarithmic,
+    linear_x,
+    linear_cases,
+    start_date=linear_start_date,
+)
+log_future_ycases = logarithmic(log_future_x, *log_popt)
+
 # exponential fit + difference between exponential and linear
 diffe_future_xdates = exp_future_xdates
 diffe_future_ycases = [2 * ex - li
@@ -146,20 +158,24 @@ plot(sig_future_xdates, sig_future_ycases,
      'x--', color='#446644', label="Sigmoidal fit across all data")
 plot(perf_future_xdates, perf_future_ycases,
      'x--', color='grey', label="Exponential fit during initial run")
-plot(exp_future_xdates, exp_future_ycases,
-     'x--', color='#66ccee', label="Exponential fit after initial run")
-plot(linear_future_xdates, linear_future_ycases,
-     'x--', color='#ee66aa', label="Linear fit after initial run")
+# plot(exp_future_xdates, exp_future_ycases,
+#      'x--', color='#66ccee', label="Exponential fit after initial run")
+plot(log_future_xdates, log_future_ycases,
+     'x--', color='#66cc44', label="Logarithmic fit after initial run")
+# plot(linear_future_xdates, linear_future_ycases,
+#      'x--', color='#ee66aa', label="Linear fit after initial run")
+
 # supplemental: neither raw data nor actual fits
-last_n = DAYS_TO_PREDICT + 3
-plot(diffe_future_xdates[-last_n:], diffe_future_ycases[-last_n:],
-     '--', color='#66ccee', alpha=0.5,
-     label="(Difference between the two, added)",
-)
-plot(diffl_future_xdates[-last_n:], diffl_future_ycases[-last_n:],
-     '--', color='#ee66aa',
-     alpha=0.5, label="(Difference between the two, removed)",
-)
+# last_n = DAYS_TO_PREDICT + 3
+# plot(diffe_future_xdates[-last_n:], diffe_future_ycases[-last_n:],
+#      '--', color='#66ccee', alpha=0.5,
+#      label="(Difference between exp and lin, added)",
+# )
+# plot(diffl_future_xdates[-last_n:], diffl_future_ycases[-last_n:],
+#      '--', color='#ee66aa',
+#      alpha=0.5, label="(Difference between exp and lin, removed)",
+# )
+
 # plot actual data on top of everything, so it doesn't get "hidden"
 plot(all_xdates, all_cases, '-b', alpha=0.7, label="Confirmed cases")
 
