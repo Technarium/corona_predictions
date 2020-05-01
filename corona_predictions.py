@@ -72,6 +72,15 @@ all_xdates = [START_DATE + timedelta(days=int(i)) for i in all_x]
 
 # best-effort to fit an exponential function, using all data
 all_popt, _, all_future_x, all_future_xdates = fit(exponential, all_x, all_cases)
+all_future_ycases = exponential(all_future_x, *all_popt)
+
+# sigmoidal fit across all data
+sig_popt, sig_pcov, sig_future_x, sig_future_xdates = fit(
+    sigmoidal,
+    all_x,
+    all_cases,
+)
+sig_future_ycases = sigmoidal(sig_future_x, *sig_popt)
 
 # limited exponent fitting when it was still perfect:
 # first, take a slice of all the cases...
@@ -109,14 +118,6 @@ exp_popt, _, exp_future_x, exp_future_xdates = fit(
 )
 exp_future_ycases = exponential(exp_future_x, *exp_popt)
 
-# sigmoidal fit across all data
-sig_popt, _, sig_future_x, sig_future_xdates = fit(
-    sigmoidal,
-    all_x,
-    all_cases,
-)
-sig_future_ycases = sigmoidal(sig_future_x, *sig_popt)
-
 # exponential fit + difference between exponential and linear
 diffe_future_xdates = exp_future_xdates
 diffe_future_ycases = [2 * ex - li
@@ -139,12 +140,12 @@ ax.minorticks_on()
 f.autofmt_xdate()
 
 # plot fits first, so they get layered on the bottom
-# plot(all_future_xdates, exponential(all_future_x, *all_popt),
+# plot(all_future_xdates, all_future_ycases,
 #      'x--r', label="Exponential fit across all data")
+plot(sig_future_xdates, sig_future_ycases,
+     'x--', color='#446644', label="Sigmoidal fit across all data")
 plot(perf_future_xdates, perf_future_ycases,
      'x--', color='grey', label="Exponential fit during initial run")
-plot(sig_future_xdates[linear_x_offset:], sig_future_ycases[linear_x_offset:],
-     'x--', color='#446644', label="Sigmoidal fit after initial run")
 plot(exp_future_xdates, exp_future_ycases,
      'x--', color='#66ccee', label="Exponential fit after initial run")
 plot(linear_future_xdates, linear_future_ycases,
