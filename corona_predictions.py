@@ -15,6 +15,7 @@ from matplotlib.pyplot import (
 from numpy import array, arange, exp, log
 from scipy.optimize import curve_fit
 
+import matplotlib.ticker as mticker
 import matplotlib.dates as mdates
 
 # NOTE: first case was detected on 2020-02-27: announced the night of
@@ -144,12 +145,13 @@ diffl_future_ycases = [2 * li - ex
 
 # figure()
 f, ax = subplots()
-#ax.xaxis.set_major_locator(days)
-ax.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
-ax.format_xdata = mdates.DateFormatter('%m-%d')
-ax.minorticks_on()
 
-f.autofmt_xdate()
+ax.xaxis.set_major_locator(mdates.DayLocator(interval=7))
+ax.xaxis.set_minor_locator(mticker.AutoMinorLocator(n=7))
+ax.yaxis.set_minor_locator(mticker.AutoMinorLocator())
+#ax.minorticks_on()
+
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
 
 # plot fits first, so they get layered on the bottom
 # plot(all_future_xdates, all_future_ycases,
