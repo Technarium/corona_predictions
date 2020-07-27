@@ -183,8 +183,8 @@ ax.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
 # plot fits first, so they get layered on the bottom
 # plot(all_future_xdates, all_future_ycases,
 #      'x--r', label="Exponential fit across all data")
-plot(sig_future_xdates, sig_future_ycases,
-     'x--', color='#446644', label="Sigmoidal fit across all data")
+# plot(sig_future_xdates, sig_future_ycases,
+#      'x--', color='#446644', label="Sigmoidal fit across all data")
 plot(perf_future_xdates, perf_future_ycases,
      'x--', color='grey', label="Exponential fit during initial run")
 # plot(exp_future_xdates, exp_future_ycases,
