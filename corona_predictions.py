@@ -156,6 +156,20 @@ diffl_future_ycases = [2 * li - ex
                        for ex, li in zip(exp_future_ycases,
                                          linear_future_ycases)]
 
+# exponential fit on second wave start
+exp2_x_offset = 120
+exp2_start_date = START_DATE + timedelta(days=exp2_x_offset)
+exp2_cases = array(CONFIRMED_CASES[exp2_x_offset:])
+exp2_x = arange(len(exp2_cases))
+exp2_popt, _, exp2_future_x, exp2_future_xdates = fit(
+    exponential,
+    exp2_x,
+    exp2_cases,
+    start_date=exp2_start_date,
+)
+exp2_future_ycases = exponential(exp2_future_x, *exp2_popt)
+
+
 # figure()
 f, ax = subplots()
 
@@ -179,6 +193,8 @@ plot(log_future_xdates, log_future_ycases,
      'x--', color='#66cc44', label="Logarithmic fit after initial run")
 # plot(linear_future_xdates, linear_future_ycases,
 #      'x--', color='#ee66aa', label="Linear fit after initial run")
+plot(exp2_future_xdates, exp2_future_ycases,
+     'x--', color='#cc6644', label="Exponential fit after second wave start")
 
 # supplemental: neither raw data nor actual fits
 # last_n = DAYS_TO_PREDICT + 3
