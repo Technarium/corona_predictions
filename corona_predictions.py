@@ -57,6 +57,7 @@ CONFIRMED_CASES = [
     2120, 2137, 2147, 2171, 2194, 2231, 2252,
 ]
 LAST_PERFECT_EXP_DATAPOINT = 143
+SECOND_WAVE_START_DAY = 124
 DAYS_TO_PREDICT = 7
 
 
@@ -158,7 +159,7 @@ diffl_future_ycases = [2 * li - ex
                                          linear_future_ycases)]
 
 # exponential fit on second wave start
-exp2_x_offset = 120
+exp2_x_offset = SECOND_WAVE_START_DAY
 exp2_start_date = START_DATE + timedelta(days=exp2_x_offset)
 exp2_cases = array(CONFIRMED_CASES[exp2_x_offset:])
 exp2_x = arange(len(exp2_cases))
