@@ -60,13 +60,16 @@ CONFIRMED_CASES = [
     2673, 2694, 2726, 2762, 2810,
 ]
 LAST_PERFECT_EXP_DATAPOINT = 143
-SECOND_WAVE_START_DAY = 136
+# FIXME: looks like curve_fit() can't handle too many points with the
+# exponent :(
+SECOND_WAVE_START_DAY = len(CONFIRMED_CASES) - 46
 DAYS_TO_PREDICT = 7
 
 def linear(x, a, b):
     return a * x + b
 
 def exponential(x, a, b, c):
+    #print(len(x), a, b, c)
     return a * exp(b * x) + c
 
 def logarithmic(x, a, b, c):
