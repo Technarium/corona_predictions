@@ -58,7 +58,7 @@ CONFIRMED_CASES = [
     2265, 2283, 2309, 2330, 2352, 2386, 2416,
     2436, 2474, 2496, 2528, 2564, 2594, 2635,
     2673, 2694, 2726, 2762, 2810, 2839, 2874,
-    2906, 2929, 2958, 2978,
+    2906, 2929, 2958, 2978, 3004,
 ]
 LAST_PERFECT_EXP_DATAPOINT = 143
 # FIXME: looks like curve_fit() can't handle too many points with the
