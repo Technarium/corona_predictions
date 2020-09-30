@@ -65,9 +65,7 @@ CONFIRMED_CASES = [
     4490, 4578, 4693,
 ]
 LAST_PERFECT_EXP_DATAPOINT = 143
-# FIXME: looks like curve_fit() can't handle too many points with the
-# exponent :(
-SECOND_WAVE_START_DAY = len(CONFIRMED_CASES) - 46
+SECOND_WAVE_START_DAY = 135 # somewhat arbitrary
 DAYS_TO_PREDICT = 7
 
 def linear(x, a, b):
@@ -103,11 +101,16 @@ all_xdates = [START_DATE + timedelta(days=int(i)) for i in all_x]
 all_popt, _, all_future_x, all_future_xdates = fit(exponential, all_x, all_cases)
 all_future_ycases = exponential(all_future_x, *all_popt)
 
-# sigmoidal fit across all data
+# sigmoidal fit on first wave data
+sigmoidal_x_offset = 14 # skip first weeks of low cases
+sigmoidal_start_date = START_DATE + timedelta(days=sigmoidal_x_offset)
+sigmoidal_cases = array(CONFIRMED_CASES[sigmoidal_x_offset:sigmoidal_x_offset+85])
+sigmoidal_x = arange(len(sigmoidal_cases))
 sig_popt, sig_pcov, sig_future_x, sig_future_xdates = fit(
     sigmoidal,
-    all_x,
-    all_cases,
+    sigmoidal_x,
+    sigmoidal_cases,
+    start_date=sigmoidal_start_date,
 )
 sig_future_ycases = sigmoidal(sig_future_x, *sig_popt)
 
@@ -156,6 +159,19 @@ log_popt, _, log_future_x, log_future_xdates = fit(
 )
 log_future_ycases = logarithmic(log_future_x, *log_popt)
 
+# logarithmic fit on first wave data
+log1w_x_offset = len_perf_cases - 1
+log1w_start_date = START_DATE + timedelta(days=log1w_x_offset)
+log1w_cases = array(CONFIRMED_CASES[log1w_x_offset:log1w_x_offset+125])
+log1w_x = arange(len(log1w_cases))
+log1w_popt, log1w_pcov, log1w_future_x, log1w_future_xdates = fit(
+    logarithmic,
+    log1w_x,
+    log1w_cases,
+    start_date=log1w_start_date,
+)
+log1w_future_ycases = logarithmic(log1w_future_x, *log1w_popt)
+
 # exponential fit + difference between exponential and linear
 diffe_future_xdates = exp_future_xdates
 diffe_future_ycases = [2 * ex - li
@@ -171,13 +187,14 @@ diffl_future_ycases = [2 * li - ex
 # exponential fit on second wave start
 exp2_x_offset = SECOND_WAVE_START_DAY
 exp2_start_date = START_DATE + timedelta(days=exp2_x_offset)
-exp2_cases = array(CONFIRMED_CASES[exp2_x_offset:])
+exp2_cases = array(CONFIRMED_CASES[exp2_x_offset:exp2_x_offset+44])
 exp2_x = arange(len(exp2_cases))
 exp2_popt, _, exp2_future_x, exp2_future_xdates = fit(
     exponential,
     exp2_x,
     exp2_cases,
     start_date=exp2_start_date,
+    days_to_predict=len(CONFIRMED_CASES)-len(exp2_cases)-exp2_x_offset,
 )
 exp2_future_ycases = exponential(exp2_future_x, *exp2_popt)
 
@@ -195,14 +212,16 @@ ax.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
 # plot fits first, so they get layered on the bottom
 # plot(all_future_xdates, all_future_ycases,
 #      'x--r', label="Exponential fit across all data")
-# plot(sig_future_xdates, sig_future_ycases,
-#      'x--', color='#446644', label="Sigmoidal fit across all data")
 plot(perf_future_xdates, perf_future_ycases,
      'x--', color='grey', label="Exponential fit during initial run")
+plot(sig_future_xdates, sig_future_ycases,
+     'x--', color='#446644', label="Sigmoidal fit across first wave data")
+plot(log1w_future_xdates, log1w_future_ycases,
+     'x--', color='#66cc44', label="Logarithmic fit across first wave data")
 # plot(exp_future_xdates, exp_future_ycases,
 #      'x--', color='#66ccee', label="Exponential fit after initial run")
-plot(log_future_xdates, log_future_ycases,
-     'x--', color='#66cc44', label="Logarithmic fit after initial run")
+# plot(log_future_xdates, log_future_ycases,
+#      'x--', color='#66cc44', label="Logarithmic fit after initial run")
 # plot(linear_future_xdates, linear_future_ycases,
 #      'x--', color='#ee66aa', label="Linear fit after initial run")
 plot(exp2_future_xdates, exp2_future_ycases,
