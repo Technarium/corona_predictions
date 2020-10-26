@@ -202,6 +202,32 @@ exp2_popt, _, exp2_future_x, exp2_future_xdates = fit(
 )
 exp2_future_ycases = exponential(exp2_future_x, *exp2_popt)
 
+# exponential fit over last 45 days
+expl45_x_offset = len(CONFIRMED_CASES)-45
+expl45_start_date = START_DATE + timedelta(days=expl45_x_offset)
+expl45_cases = array(CONFIRMED_CASES[expl45_x_offset:])
+expl45_x = arange(len(expl45_cases))
+expl45_popt, _, expl45_future_x, expl45_future_xdates = fit(
+    exponential,
+    expl45_x,
+    expl45_cases,
+    start_date=expl45_start_date,
+)
+expl45_future_ycases = exponential(expl45_future_x, *expl45_popt)
+
+# exponential fit over last 15 days
+expl15_x_offset = len(CONFIRMED_CASES)-15
+expl15_start_date = START_DATE + timedelta(days=expl15_x_offset)
+expl15_cases = array(CONFIRMED_CASES[expl15_x_offset:])
+expl15_x = arange(len(expl15_cases))
+expl15_popt, _, expl15_future_x, expl15_future_xdates = fit(
+    exponential,
+    expl15_x,
+    expl15_cases,
+    start_date=expl15_start_date,
+)
+expl15_future_ycases = exponential(expl15_future_x, *expl15_popt)
+
 
 # figure()
 f, ax = subplots()
@@ -229,7 +255,11 @@ plot(log1w_future_xdates, log1w_future_ycases,
 # plot(linear_future_xdates, linear_future_ycases,
 #      'x--', color='#ee66aa', label="Linear fit after initial run")
 plot(exp2_future_xdates, exp2_future_ycases,
-     'x--', color='#cc6644', label="Exponential fit after second wave start")
+     'x--', color='#ee9955', label="Exponential fit after second wave start")
+plot(expl45_future_xdates, expl45_future_ycases,
+     'x--', color='#aa3311', label="Exponential fit over last 45 days")
+plot(expl15_future_xdates, expl15_future_ycases,
+     'x--', color='#dd2200', label="Exponential fit over last 15 days")
 
 # supplemental: neither raw data nor actual fits
 # last_n = DAYS_TO_PREDICT + 3
