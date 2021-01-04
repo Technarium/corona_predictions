@@ -22,7 +22,7 @@ import matplotlib.dates as mdates
 # 27/28; recorded on 2020-02-28
 START_DATE = date(2020, 2, 24)
 # confirmed on day-end
-CONFIRMED_CASES = [
+CUMULATIVE_CASES = [
     0, 0, 0, 0, 1, 1, 1,
     1, 1, 1, 1, 1, 1, 1,
     2, 3, 3, 3, 6, 7, 12,
@@ -107,7 +107,7 @@ def fit(func, x, y, start_date=START_DATE, days_to_predict=DAYS_TO_PREDICT):
 days = mdates.DayLocator()
 
 # actual cases
-all_cases = array(CONFIRMED_CASES)
+all_cases = array(CUMULATIVE_CASES)
 all_x = arange(len(all_cases))
 all_xdates = [START_DATE + timedelta(days=int(i)) for i in all_x]
 
@@ -118,7 +118,7 @@ all_future_ycases = exponential(all_future_x, *all_popt)
 # sigmoidal fit on first wave data
 sigmoidal_x_offset = 14 # skip first weeks of low cases
 sigmoidal_start_date = START_DATE + timedelta(days=sigmoidal_x_offset)
-sigmoidal_cases = array(CONFIRMED_CASES[sigmoidal_x_offset:sigmoidal_x_offset+85])
+sigmoidal_cases = array(CUMULATIVE_CASES[sigmoidal_x_offset:sigmoidal_x_offset+85])
 sigmoidal_x = arange(len(sigmoidal_cases))
 sig_popt, sig_pcov, sig_future_x, sig_future_xdates = fit(
     sigmoidal,
@@ -130,8 +130,8 @@ sig_future_ycases = sigmoidal(sig_future_x, *sig_popt)
 
 # limited exponent fitting when it was still perfect:
 # first, take a slice of all the cases...
-len_perf_cases = CONFIRMED_CASES.index(LAST_PERFECT_EXP_DATAPOINT) + 1
-perf_cases = array(CONFIRMED_CASES[:len_perf_cases])
+len_perf_cases = CUMULATIVE_CASES.index(LAST_PERFECT_EXP_DATAPOINT) + 1
+perf_cases = array(CUMULATIVE_CASES[:len_perf_cases])
 perf_x = arange(len(perf_cases))
 # ... then fit a curve to that
 perf_popt, _, perf_future_x, perf_future_xdates = fit(
@@ -145,7 +145,7 @@ perf_future_ycases = exponential(perf_future_x, *perf_popt)
 # linear fit after initial exponential run
 linear_x_offset = len_perf_cases - 1
 linear_start_date = START_DATE + timedelta(days=linear_x_offset)
-linear_cases = array(CONFIRMED_CASES[linear_x_offset:])
+linear_cases = array(CUMULATIVE_CASES[linear_x_offset:])
 linear_x = arange(len(linear_cases))
 linear_popt, _, linear_future_x, linear_future_xdates = fit(
     linear,
@@ -176,7 +176,7 @@ log_future_ycases = logarithmic(log_future_x, *log_popt)
 # logarithmic fit on first wave data
 log1w_x_offset = len_perf_cases - 1
 log1w_start_date = START_DATE + timedelta(days=log1w_x_offset)
-log1w_cases = array(CONFIRMED_CASES[log1w_x_offset:log1w_x_offset+125])
+log1w_cases = array(CUMULATIVE_CASES[log1w_x_offset:log1w_x_offset+125])
 log1w_x = arange(len(log1w_cases))
 log1w_popt, log1w_pcov, log1w_future_x, log1w_future_xdates = fit(
     logarithmic,
@@ -201,21 +201,21 @@ diffl_future_ycases = [2 * li - ex
 # exponential fit on second wave start
 exp2_x_offset = SECOND_WAVE_START_DAY
 exp2_start_date = START_DATE + timedelta(days=exp2_x_offset)
-exp2_cases = array(CONFIRMED_CASES[exp2_x_offset:exp2_x_offset+44])
+exp2_cases = array(CUMULATIVE_CASES[exp2_x_offset:exp2_x_offset+44])
 exp2_x = arange(len(exp2_cases))
 exp2_popt, _, exp2_future_x, exp2_future_xdates = fit(
     exponential,
     exp2_x,
     exp2_cases,
     start_date=exp2_start_date,
-    days_to_predict=len(CONFIRMED_CASES)-len(exp2_cases)-exp2_x_offset,
+    days_to_predict=len(CUMULATIVE_CASES)-len(exp2_cases)-exp2_x_offset,
 )
 exp2_future_ycases = exponential(exp2_future_x, *exp2_popt)
 
 # exponential fit over last 42 days
-expl42_x_offset = len(CONFIRMED_CASES)-42
+expl42_x_offset = len(CUMULATIVE_CASES)-42
 expl42_start_date = START_DATE + timedelta(days=expl42_x_offset)
-expl42_cases = array(CONFIRMED_CASES[expl42_x_offset:])
+expl42_cases = array(CUMULATIVE_CASES[expl42_x_offset:])
 expl42_x = arange(len(expl42_cases))
 expl42_popt, _, expl42_future_x, expl42_future_xdates = fit(
     exponential,
@@ -226,9 +226,9 @@ expl42_popt, _, expl42_future_x, expl42_future_xdates = fit(
 expl42_future_ycases = exponential(expl42_future_x, *expl42_popt)
 
 # exponential fit over last 15 days
-expl15_x_offset = len(CONFIRMED_CASES)-15
+expl15_x_offset = len(CUMULATIVE_CASES)-15
 expl15_start_date = START_DATE + timedelta(days=expl15_x_offset)
-expl15_cases = array(CONFIRMED_CASES[expl15_x_offset:])
+expl15_cases = array(CUMULATIVE_CASES[expl15_x_offset:])
 expl15_x = arange(len(expl15_cases))
 expl15_popt, _, expl15_future_x, expl15_future_xdates = fit(
     exponential,
