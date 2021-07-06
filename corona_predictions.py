@@ -94,7 +94,7 @@ DAILY_CASES = [
     66, 129, 126, 104, 72, 75, 50,
     28, 58, 54, 61, 18, 44, 17,
     15, 35, 40, 25, 30, 35, 20m
-    18,
+    18, 40,
 ]
 # previously, this calculation was done manually; an artifact of better days
 cumulative = 0
