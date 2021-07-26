@@ -235,7 +235,7 @@ exp2_popt, _, exp2_future_x, exp2_future_xdates = fit(
     exp2_x,
     exp2_cases,
     start_date=exp2_start_date,
-    days_to_predict=len(CUMULATIVE_CASES)-len(exp2_cases)-exp2_x_offset,
+    days_to_predict=140,
 )
 exp2_future_ycases = exponential(exp2_future_x, *exp2_popt)
 
