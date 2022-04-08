@@ -133,7 +133,7 @@ DAILY_CASES = [
     2552, 5317, 7054, 6104, 5384, 5262, 3129,
     2190, 4299, 5322, 4580, 3938, 3652, 2376,
     1276, 2823, 3705, 3355, 2972, 2442, 1766,
-    902, 1911, 2511, 1924,
+    902, 1911, 2511, 1924, 1775,
 ]
 # previously, this calculation was done manually; an artifact of better days
 cumulative = 0
